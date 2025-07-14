@@ -1,0 +1,40 @@
+import math
+import streamlit as st
+import matplotlib.pyplot as plt
+
+# عنوان برنامه
+st.title("🌀 محاسبه زاویه مخروط تراشی")
+
+# ورودی‌ها از کاربر
+D = st.number_input("قطر بزرگ‌تر D (میلی‌متر)", min_value=0.0, value=50.0)
+d = st.number_input("قطر کوچک‌تر d (میلی‌متر)", min_value=0.0, value=30.0)
+l = st.number_input("طول مخروط l (میلی‌متر)", min_value=0.1, value=100.0)
+
+if D > d:
+    delta_d = D - d
+    tan_alpha_2 = delta_d / (2 * l)
+    alpha_rad = math.atan(tan_alpha_2) * 2
+    alpha_deg = math.degrees(alpha_rad)
+    k = 1 / (2 * tan_alpha_2)
+
+    st.success(f"🔸 زاویه مخروط (α): {alpha_deg:.2f} درجه")
+    st.info(f"🔸 ضریب مخروطی بودن (k): {k:.3f}")
+
+    # رسم گراف
+    fig, ax = plt.subplots()
+    X = [0, l, 0]
+    Y_top = [D/2, 0, d/2]
+    Y_bottom = [-y for y in Y_top]
+
+    ax.plot(X, Y_top, 'r', linewidth=2)
+    ax.plot(X, Y_bottom, 'r', linewidth=2)
+    ax.fill_between(X, Y_top, Y_bottom, color='orange', alpha=0.3)
+    ax.set_title("شمای مخروط تراشی")
+    ax.set_xlabel("طول (l)")
+    ax.set_ylabel("قطر")
+    ax.axis('equal')
+    ax.grid(True)
+
+    st.pyplot(fig)
+else:
+    st.warning("⚠️ قطر بزرگ‌تر باید از قطر کوچک‌تر بیشتر باشد.")
